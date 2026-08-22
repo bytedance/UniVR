@@ -275,7 +275,7 @@ class VRTrainDataset(Dataset):
         self.debug_vis_dir = debug_vis_dir
         self.debug_vis_max = debug_vis_max
         self._debug_vis_count = 0
-        self.cfg_prob = 0.0  # probability of using unconditional prompt for CFG training
+        self.cfg_prob = cfg_prob  # probability of using unconditional prompt for CFG training
         self.interleaved_text = interleaved_text  # use interleaved text-image format for qualified datasets
 
         # Special tokens
