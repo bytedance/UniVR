@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>数字选择游戏 - RL 训练</title>
     <style>
         * {
@@ -159,8 +159,10 @@
         .card {
             flex: 1;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
             border-radius: 10px;
             padding: 20px 10px;
+            font: inherit;
             text-align: center;
             cursor: pointer;
             transition: all 0.3s ease;
@@ -172,6 +174,11 @@
         .card:hover {
             transform: translateY(-3px);
             box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+        }
+
+        .card:focus-visible {
+            outline: 3px solid #1a73e8;
+            outline-offset: 3px;
         }
 
         .card:active {
@@ -470,8 +477,10 @@
 
             const labels = ['a', 'b', 'c'];
             currentNumbers.forEach((num, index) => {
-                const card = document.createElement('div');
+                const card = document.createElement('button');
+                card.type = 'button';
                 card.className = 'card';
+                card.setAttribute('aria-label', `选项 ${labels[index]}，数字 ${num}`);
                 card.innerHTML = `
                     <div class="card-number">${num}</div>
                     <div class="card-label">选项 ${labels[index]}</div>
