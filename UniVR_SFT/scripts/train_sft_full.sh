@@ -77,7 +77,7 @@ torchrun \
     --learning_rate 1e-5 \
     --logging_steps 10 \
     --save_steps 1000 \
-    --use_lora True \
+    --use_lora False \
     --lora_r 128 \
     --lora_alpha 256 \
     --lora_dropout 0.1 \
