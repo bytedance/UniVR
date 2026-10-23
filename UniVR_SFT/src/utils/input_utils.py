@@ -17,6 +17,14 @@ import torch
 import numpy as np
 
 
+def ensure_bos_token(input_ids: torch.Tensor, bos_token_id: int) -> torch.Tensor:
+    if input_ids[0, 0] == bos_token_id:
+        return input_ids
+
+    bos = input_ids.new_tensor([[bos_token_id]])
+    return torch.cat([bos, input_ids], dim=1)
+
+
 def smart_resize(image: Image.Image, area: int = 512 * 512, ds_factor: int = 16):
     width, height = image.size
     aspect_ratio = width / height

@@ -42,7 +42,7 @@ from PIL import Image
 from src.utils.model_utils import build_emu3p5_vllm
 from src.utils.vllm_generation_utils import generate, generate_batch
 from src.utils.generation_utils import multimodal_decode, decode_image
-from src.utils.input_utils import build_image
+from src.utils.input_utils import build_image, ensure_bos_token
 
 
 def parse_args():
@@ -265,9 +265,7 @@ def prepare_batch_inputs(cfg, tokenizer, prompts_with_ids):
         unc_prompt = cfg.unc_prompt.replace("<|IMAGE|>", image_str)
 
         input_ids = tokenizer.encode(prompt, return_tensors="pt", add_special_tokens=False)
-        if input_ids[0, 0] != cfg.special_token_ids["BOS"]:
-            BOS = torch.Tensor([[cfg.special_token_ids["BOS"]]], dtype=input_ids.dtype)
-            input_ids = torch.cat([BOS, input_ids], dim=1)
+        input_ids = ensure_bos_token(input_ids, cfg.special_token_ids["BOS"])
 
         unconditional_ids = tokenizer.encode(unc_prompt, return_tensors="pt", add_special_tokens=False)
 
@@ -492,9 +490,7 @@ def inference_and_save(cfg, model, tokenizer, vq_model, prompts_with_ids, batch_
             unc_prompt = cfg.unc_prompt.replace("<|IMAGE|>", image_str)
 
             input_ids = tokenizer.encode(prompt, return_tensors="pt", add_special_tokens=False)
-            if input_ids[0, 0] != cfg.special_token_ids["BOS"]:
-                BOS = torch.Tensor([[cfg.special_token_ids["BOS"]]], dtype=input_ids.dtype)
-                input_ids = torch.cat([BOS, input_ids], dim=1)
+            input_ids = ensure_bos_token(input_ids, cfg.special_token_ids["BOS"])
 
             unconditional_ids = tokenizer.encode(unc_prompt, return_tensors="pt", add_special_tokens=False)
 

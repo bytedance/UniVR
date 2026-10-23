@@ -47,6 +47,7 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from src.utils.model_utils import build_emu3p5_vllm
 from src.utils.vllm_generation_utils import generate, generate_batch
 from src.utils.generation_utils import multimodal_decode, decode_image
+from src.utils.input_utils import ensure_bos_token
 # Try to import natsort for natural sorting
 try:
     from natsort import natsorted
@@ -429,9 +430,7 @@ def prepare_batch_inputs(cfg, tokenizer, prompts_with_ids):
 
         # Tokenize 
         input_ids = tokenizer.encode(prompt, return_tensors="pt", add_special_tokens=False)
-        if input_ids[0, 0] != cfg.special_token_ids["BOS"]:
-            BOS = torch.Tensor([[cfg.special_token_ids["BOS"]]], dtype=input_ids.dtype)
-            input_ids = torch.cat([BOS, input_ids], dim=1)
+        input_ids = ensure_bos_token(input_ids, cfg.special_token_ids["BOS"])
 
         unconditional_ids = tokenizer.encode(unc_prompt, return_tensors="pt", add_special_tokens=False)
         
@@ -733,9 +732,7 @@ def inference_and_save(cfg, model, tokenizer, vq_model, prompts_with_ids, batch_
 
             # Tokenize 
             input_ids = tokenizer.encode(prompt, return_tensors="pt", add_special_tokens=False)
-            if input_ids[0, 0] != cfg.special_token_ids["BOS"]:
-                BOS = torch.Tensor([[cfg.special_token_ids["BOS"]]], dtype=input_ids.dtype)
-                input_ids = torch.cat([BOS, input_ids], dim=1)
+            input_ids = ensure_bos_token(input_ids, cfg.special_token_ids["BOS"])
 
             unconditional_ids = tokenizer.encode(unc_prompt, return_tensors="pt", add_special_tokens=False)
 
